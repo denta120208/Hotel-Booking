@@ -3,18 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Room;
-use App\Models\Booking;
 use Illuminate\Http\Request;
 
 class UserBookingController extends Controller 
 {
     public function index()
     {
-        // Cek jumlah kamar
-        $roomCount = Room::count();
-        
-        if ($roomCount == 0) {
-            $roomData = [
+        if (Room::count() === 0) {
+            // Insert dummy data (sebaiknya dipindah ke Seeder)
+            $roomData = [   
                 [
                     'name' => 'Deluxe Room',
                     'image' => 'image/rooms/deluxe.jpeg',
@@ -41,16 +38,15 @@ class UserBookingController extends Controller
                     'description' => 'Kamar sederhana dan bersih cocok untuk ramai-ramai.'
                 ],
             ];
-    
+
             foreach ($roomData as $data) {
                 Room::create($data);
             }
         }
-    
-        // Ambil data room dan relasi booking-nya (opsional)
-        $rooms = Room::with('bookings')->get(); // <- Eager loading
-        
+
+        // Ambil semua kamar beserta booking-nya
+        $rooms = Room::with('bookings')->get();
+
         return view('user.index', compact('rooms'));
     }
-    
 }

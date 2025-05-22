@@ -8,20 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class Room extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
         'name',
         'image',
         'description',
-        'is_booked'
     ];
-    
+
     public function bookings()
     {
         return $this->hasMany(Booking::class);
     }
-    
-
-    
-
 }

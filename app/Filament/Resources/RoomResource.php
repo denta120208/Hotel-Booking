@@ -3,16 +3,16 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\RoomResource\Pages;
-use App\Filament\Resources\RoomResource\RelationManagers;
 use App\Models\Room;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Textarea;
+
 class RoomResource extends Resource
 {
     protected static ?string $model = Room::class;
@@ -23,8 +23,26 @@ class RoomResource extends Resource
     {
         return $form
             ->schema([
-                
-FileUpload::make('image')->image()->directory('rooms')->required()
+                TextInput::make('name')
+                    ->label('Nama Kamar')
+                    ->required()
+                    ->maxLength(255),
+
+                TextInput::make('price')
+                    ->label('Harga')
+                    ->numeric()
+                    ->required(),
+
+                Textarea::make('description')
+                    ->label('Deskripsi')
+                    ->maxLength(1000)
+                    ->nullable(),
+
+                FileUpload::make('image')
+                    ->label('Gambar')
+                    ->image()
+                    ->directory('rooms')
+                    ->required(),
             ]);
     }
 
@@ -32,26 +50,21 @@ FileUpload::make('image')->image()->directory('rooms')->required()
     {
         return $table
             ->columns([
-                //
-            ])
-            ->filters([
-                //
+                Tables\Columns\TextColumn::make('name')->label('Nama Kamar')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('price')->label('Harga')->sortable(),
+                Tables\Columns\ImageColumn::make('image')->label('Gambar'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
